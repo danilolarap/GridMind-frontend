@@ -36,3 +36,13 @@ Las pruebas cubren la normalización de datos, la agrupación semanal, el JWT, l
 Configura `VITE_API_URL` en el servicio de hosting antes de compilar. Las variables `VITE_` son públicas y se incorporan al build; no contienen secretos.
 Publica el directorio `dist` generado con `npm run build`. `vercel.json` incluye la reescritura necesaria para abrir rutas internas directamente.
 No se incluyen `.env`, dependencias ni archivos compilados en Git.
+
+## Docker
+
+```powershell
+docker build --build-arg VITE_API_URL=http://localhost:8080 -t gridmind-frontend .
+docker run --rm -p 5173:80 gridmind-frontend
+```
+
+La imagen compila con `npm ci` y sirve `dist` con nginx (con la misma reescritura de rutas que `vercel.json`).
+Para levantar el esqueleto completo, usa `compose.yaml` del repo GridMind-backend.
