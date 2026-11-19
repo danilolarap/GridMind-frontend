@@ -4,12 +4,15 @@ Aplicación de gestión energética con React, TypeScript y Vite. Incluye autent
 
 ## Requisitos
 
-- Node.js 22.18 o posterior y npm.
+- Node.js 22.23.5 (`.nvmrc`) y npm 10.9.9 (`packageManager`). El mínimo compatible sigue siendo Node 22.18.
 - Backend GridMind accesible por HTTP/HTTPS y WebSocket.
 
 ## Desarrollo
 
 ```sh
+nvm use # si utilizas nvm
+node --version # v22.23.5
+npm --version  # 10.9.9
 npm ci
 cp .env.example .env
 npm run dev
@@ -46,3 +49,13 @@ docker run --rm -p 5173:80 gridmind-frontend
 
 La imagen compila con `npm ci` y sirve `dist` con nginx (con la misma reescritura de rutas que `vercel.json`).
 Para levantar el esqueleto completo, usa `compose.yaml` del repo GridMind-backend.
+
+El lockfile publicado en `e114384` incluye las dependencias WASM opcionales de Rolldown. La instalación reproducible usa `npm ci` sin regenerarlo durante Docker. El Dockerfile y el Compose revisado de `GridMind-backend` fijan por digest Node 22.23.5 / npm 10.9.9.
+
+### Codespaces y proxy del backend
+
+En el despliegue integrado, `VITE_API_URL` debe ser el **origen HTTPS del frontend**, sin `/api` al final, por ejemplo `https://<codespace>-5173.app.github.dev`. Se incorpora al compilar: reconstruye la imagen si cambia el origen. El cliente usa ese mismo origen para HTTP `/api/v1/...` y WSS `/api/v1/ws`.
+
+El repositorio backend gestiona el proxy mediante `docker/frontend.conf`, montado en nginx del frontend por Compose. El `nginx.conf` de esta imagen solo sirve la SPA; para usar la imagen sin ese montaje, configura una URL de backend accesible desde el navegador y su CORS, como en el ejemplo Docker anterior.
+
+Consulta [la guía de navegador del backend](../GridMind-backend/docs/codespaces-navegador.md) y [su informe de validación](../GridMind-backend/docs/validacion-ia-caida.md). Conserva el nombre de proyecto, los volúmenes y los ajustes existentes del Codespace antes de integrar Compose u overrides. El cierre local, sus verificaciones y las dos incidencias abiertas del dashboard se documentan en [docs/validacion-docker-codespaces.md](docs/validacion-docker-codespaces.md).
