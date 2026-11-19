@@ -41,6 +41,7 @@
       "minimatch": "^11.0.8"
     }
   },
+  "packageManager": "npm@10.9.9",
   "engines": {
     "node": ">=22.18.0"
   }
